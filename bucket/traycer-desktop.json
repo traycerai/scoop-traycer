@@ -1,13 +1,13 @@
 {
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Traycer desktop app",
   "homepage": "https://traycer.ai",
   "license": "MIT",
-  "notes": "Release notes: https://github.com/traycerai/traycer/releases/tag/desktop-v1.5.1",
+  "notes": "Release notes: https://github.com/traycerai/traycer/releases/tag/desktop-v1.5.2",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/traycerai/traycer/releases/download/desktop-v1.5.1/traycer-desktop-windows-x64.exe#/dl.7z",
-      "hash": "c898b0270e5e3ec557759a36edeb5e2f595f7e21e82174f7a374d3312d9d5c9c"
+      "url": "https://github.com/traycerai/traycer/releases/download/desktop-v1.5.2/traycer-desktop-windows-x64.exe#/dl.7z",
+      "hash": "7dc802b45226c1102d812b5abbedf1e19a9a418dbe7949deaaabbe140fca875e"
     }
   },
   "installer": {
@@ -20,6 +20,9 @@
   "uninstaller": {
     "script": [
       "if ($cmd -eq 'uninstall') {",
+      "  $cli = $null",
+      "  try { $raw = Get-Content -Raw -LiteralPath (Join-Path $env:USERPROFILE '.traycer\\cli\\manifest.json') -ErrorAction Stop; if ($raw.TrimStart().StartsWith('{')) { $cli = ConvertFrom-Json $raw } } catch {}",
+      "  if (-not (($cli -is [System.Management.Automation.PSCustomObject]) -and ($cli.source -is [string]) -and ($cli.source -ceq 'desktop'))) { return }",
       "  try {",
       "    $s = New-Object -ComObject Schedule.Service",
       "    $s.Connect()",
