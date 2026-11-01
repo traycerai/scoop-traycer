@@ -1,0 +1,65 @@
+{
+  "version": "1.5.1",
+  "description": "Traycer desktop app",
+  "homepage": "https://traycer.ai",
+  "license": "MIT",
+  "notes": "Release notes: https://github.com/traycerai/traycer/releases/tag/desktop-v1.5.1",
+  "architecture": {
+    "64bit": {
+      "url": "https://github.com/traycerai/traycer/releases/download/desktop-v1.5.1/traycer-desktop-windows-x64.exe#/dl.7z",
+      "hash": "c898b0270e5e3ec557759a36edeb5e2f595f7e21e82174f7a374d3312d9d5c9c"
+    }
+  },
+  "installer": {
+    "script": [
+      "Expand-7zipArchive \"$dir\\`$PLUGINSDIR\\app-64.7z\" \"$dir\"",
+      "Remove-Item \"$dir\\`$*\", \"$dir\\Uninst*\" -Force -Recurse -ErrorAction SilentlyContinue",
+      "Set-Content -Path \"$dir\\resources\\package-type\" -Value 'scoop' -NoNewline -Encoding ascii"
+    ]
+  },
+  "uninstaller": {
+    "script": [
+      "if ($cmd -eq 'uninstall') {",
+      "  try {",
+      "    $s = New-Object -ComObject Schedule.Service",
+      "    $s.Connect()",
+      "    $task = $null",
+      "    $gone = $false",
+      "    try { $task = $s.GetFolder('\\').GetTask('\\Traycer\\Host') } catch { $e = $_.Exception; if ($e.InnerException) { $e = $e.InnerException }; $gone = ($e.HResult -eq -2147024894) -or ($e.HResult -eq -2147024893) }",
+      "    $mine = $false",
+      "    if ($task) {",
+      "      $u = [string]$task.Definition.Principal.UserId",
+      "      if ($u -notmatch '^S-1-[0-9]+(-[0-9]+)+$') { $u = (New-Object System.Security.Principal.NTAccount($u)).Translate([System.Security.Principal.SecurityIdentifier]).Value }",
+      "      $mine = $u -ieq [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value",
+      "    }",
+      "    if ($mine) {",
+      "      schtasks /End /TN '\\Traycer\\Host' | Out-Null",
+      "      schtasks /Delete /TN '\\Traycer\\Host' /F | Out-Null",
+      "    }",
+      "    if ($mine -or $gone) {",
+      "      $folder = $s.GetFolder('\\Traycer')",
+      "      if ((@($folder.GetTasks(1)).Count -eq 0) -and (@($folder.GetFolders(0)).Count -eq 0)) { $s.GetFolder('\\').DeleteFolder('Traycer', 0) }",
+      "    }",
+      "  } catch {}",
+      "  Remove-Item \"$env:USERPROFILE\\.traycer\\cli\\host-start-hidden.vbs\" -Force -ErrorAction SilentlyContinue",
+      "}"
+    ]
+  },
+  "shortcuts": [
+    [
+      "Traycer.exe",
+      "Traycer"
+    ]
+  ],
+  "checkver": {
+    "url": "https://api.github.com/repos/traycerai/traycer/releases?per_page=100",
+    "regex": "\"tag_name\":\\s*\"desktop-v([\\d.]+)\""
+  },
+  "autoupdate": {
+    "architecture": {
+      "64bit": {
+        "url": "https://github.com/traycerai/traycer/releases/download/desktop-v$version/traycer-desktop-windows-x64.exe#/dl.7z"
+      }
+    }
+  }
+}
