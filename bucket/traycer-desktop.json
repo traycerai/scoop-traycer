@@ -1,13 +1,13 @@
 {
-  "version": "1.5.2",
+  "version": "1.5.4",
   "description": "Traycer desktop app",
   "homepage": "https://traycer.ai",
   "license": "MIT",
-  "notes": "Release notes: https://github.com/traycerai/traycer/releases/tag/desktop-v1.5.2",
+  "notes": "Release notes: https://github.com/traycerai/traycer/releases/tag/desktop-v1.5.4",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/traycerai/traycer/releases/download/desktop-v1.5.2/traycer-desktop-windows-x64.exe#/dl.7z",
-      "hash": "7dc802b45226c1102d812b5abbedf1e19a9a418dbe7949deaaabbe140fca875e"
+      "url": "https://github.com/traycerai/traycer/releases/download/desktop-v1.5.4/traycer-desktop-windows-x64.exe#/dl.7z",
+      "hash": "50e1c155db508f2bd6c741fc47ab5d8183647ca830b6e7af3365bdb51d313abd"
     }
   },
   "installer": {
